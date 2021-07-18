@@ -189,14 +189,15 @@ function planFurthestPath(board: Board) {
 function addTunnels(board: Board) {
   let squares = Array.from(board).map((v) => v[1]);
   for (const square of squares) {
-    if (
-      !square.food &&
+    const spaceAround =
       (board.has(`${square.x - 1},${square.y}`) ? 1 : 0) +
-        (board.has(`${square.x + 1},${square.y}`) ? 1 : 0) +
-        (board.has(`${square.x},${square.y - 1}`) ? 1 : 0) +
-        (board.has(`${square.x},${square.y + 1}`) ? 1 : 0) <
-        3
-    ) {
+      (board.has(`${square.x + 1},${square.y}`) ? 1 : 0) +
+      (board.has(`${square.x},${square.y - 1}`) ? 1 : 0) +
+      (board.has(`${square.x},${square.y + 1}`) ? 1 : 0);
+    if (spaceAround == 0) {
+      // Never enter a completely enclosed square
+      board.delete(`${square.x},${square.y}`);
+    } else if (!square.food && spaceAround < 3) {
       // This is a tunnel, and so we need to be more wary of these
       square.cost = 40;
       board.set(`${square.x},${square.y}`, square);
